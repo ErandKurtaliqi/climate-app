@@ -1,0 +1,241 @@
+<div class="dashboard">
+  <!-- Hero Header -->
+  <header class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-content">
+      <div class="logo">
+        <span class="logo-icon">🌍</span>
+        <h1>Klima Kosovë</h1>
+      </div>
+      <p class="subtitle">Vizualizimi i të dhënave mbi ndryshimet klimatike</p>
+    </div>
+  </header>
+
+  <!-- Controls Section -->
+  <section class="controls">
+    <div class="control-group">
+      <label for="citySelect">
+        <span class="control-icon">📍</span>
+        Zgjedh Qytetin
+      </label>
+      <select id="citySelect" [(ngModel)]="selectedCityId" (ngModelChange)="onCityChange()">
+        @for (city of cities; track city.id) {
+          <option [value]="city.id">{{ city.nameAlbanian }}</option>
+        }
+      </select>
+    </div>
+    
+    <div class="control-group">
+      <label for="yearSelect">
+        <span class="control-icon">📅</span>
+        Zgjedh Vitin
+      </label>
+      <select id="yearSelect" [(ngModel)]="selectedYear" (ngModelChange)="onYearChange()">
+        @for (year of years; track year) {
+          <option [value]="year">{{ year }}</option>
+        }
+      </select>
+    </div>
+  </section>
+
+  <!-- City Info Card -->
+  @if (selectedCity) {
+    <section class="city-info">
+      <div class="city-card">
+        <div class="city-header">
+          <h2>{{ selectedCity.nameAlbanian }}</h2>
+          <span class="region-badge">{{ selectedCity.region }}</span>
+        </div>
+        <div class="city-stats">
+          <div class="stat">
+            <span class="stat-value">{{ selectedCity.population | number }}</span>
+            <span class="stat-label">Popullsia</span>
+          </div>
+          <div class="stat">
+            <span class="stat-value">{{ selectedCity.latitude.toFixed(2) }}°</span>
+            <span class="stat-label">Gjerësia</span>
+          </div>
+          <div class="stat">
+            <span class="stat-value">{{ selectedCity.longitude.toFixed(2) }}°</span>
+            <span class="stat-label">Gjatësia</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  }
+
+  <!-- Statistics Cards -->
+  @if (statistics) {
+    <section class="stats-grid">
+      <div class="stat-card temp-card">
+        <div class="stat-icon">🌡️</div>
+        <div class="stat-content">
+          <span class="stat-number">{{ statistics.overallAverageTemperature }}°C</span>
+          <span class="stat-title">Temp. Mesatare</span>
+        </div>
+      </div>
+      
+      <div class="stat-card increase-card">
+        <div class="stat-icon">📈</div>
+        <div class="stat-content">
+          <span class="stat-number" [class.positive]="statistics.temperatureIncrease > 0">
+            +{{ statistics.temperatureIncrease }}°C
+          </span>
+          <span class="stat-title">Rritja e Temp.</span>
+        </div>
+      </div>
+      
+      <div class="stat-card max-card">
+        <div class="stat-icon">🔥</div>
+        <div class="stat-content">
+          <span class="stat-number">{{ statistics.highestTemperature }}°C</span>
+          <span class="stat-title">Temp. Maksimale</span>
+        </div>
+      </div>
+      
+      <div class="stat-card min-card">
+        <div class="stat-icon">❄️</div>
+        <div class="stat-content">
+          <span class="stat-number">{{ statistics.lowestTemperature }}°C</span>
+          <span class="stat-title">Temp. Minimale</span>
+        </div>
+      </div>
+      
+      <div class="stat-card rain-card">
+        <div class="stat-icon">💧</div>
+        <div class="stat-content">
+          <span class="stat-number">{{ statistics.averagePrecipitation }}mm</span>
+          <span class="stat-title">Reshje Mesatare</span>
+        </div>
+      </div>
+      
+      <div class="stat-card co2-card">
+        <div class="stat-icon">☁️</div>
+        <div class="stat-content">
+          <span class="stat-number">{{ statistics.currentCO2Level }} ppm</span>
+          <span class="stat-title">Niveli CO₂</span>
+        </div>
+      </div>
+    </section>
+  }
+
+  <!-- Charts Grid -->
+  <section class="charts-section">
+    <h2 class="section-title">
+      <span class="title-icon">📊</span>
+      Grafikët Klimatikë
+    </h2>
+    
+    <div class="charts-grid">
+      <!-- Temperature Trend Chart -->
+      <div class="chart-card large">
+        <div class="chart-header">
+          <h3>🌡️ Trendi i Temperaturës (2000-2025)</h3>
+          <p>Ndryshimet e temperaturës mesatare vjetore</p>
+        </div>
+        <div class="chart-container">
+          <canvas #temperatureChart></canvas>
+        </div>
+      </div>
+
+      <!-- Precipitation Chart -->
+      <div class="chart-card large">
+        <div class="chart-header">
+          <h3>🌧️ Reshjet Vjetore</h3>
+          <p>Sasia totale e reshjeve për çdo vit</p>
+        </div>
+        <div class="chart-container">
+          <canvas #precipitationChart></canvas>
+        </div>
+      </div>
+
+      <!-- Seasonal Chart -->
+      <div class="chart-card">
+        <div class="chart-header">
+          <h3>🍂 Të Dhënat Sezonale</h3>
+          <p>Temperaturat sipas stinëve për vitin {{ selectedYear }}</p>
+        </div>
+        <div class="chart-container">
+          <canvas #seasonalChart></canvas>
+        </div>
+      </div>
+
+      <!-- CO2 Chart -->
+      <div class="chart-card">
+        <div class="chart-header">
+          <h3>☁️ Niveli i CO₂</h3>
+          <p>Trendi i emetimeve të CO₂</p>
+        </div>
+        <div class="chart-container">
+          <canvas #co2Chart></canvas>
+        </div>
+      </div>
+
+      <!-- City Comparison Chart -->
+      <div class="chart-card">
+        <div class="chart-header">
+          <h3>🏙️ Krahasimi i Qyteteve</h3>
+          <p>Temperaturat mesatare të qyteteve në {{ selectedYear }}</p>
+        </div>
+        <div class="chart-container">
+          <canvas #comparisonChart></canvas>
+        </div>
+      </div>
+
+      <!-- Humidity Chart -->
+      <div class="chart-card">
+        <div class="chart-header">
+          <h3>💨 Lagështia</h3>
+          <p>Niveli aktual i lagështisë</p>
+        </div>
+        <div class="chart-container">
+          <canvas #humidityChart></canvas>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Extreme Weather Events -->
+  <section class="events-section">
+    <h2 class="section-title">
+      <span class="title-icon">⚠️</span>
+      Ngjarjet Ekstreme të Motit
+    </h2>
+    
+    <div class="events-grid">
+      @for (event of extremeEvents; track event.id) {
+        <div class="event-card" [class]="getSeverityClass(event.severity)">
+          <div class="event-icon">{{ getEventIcon(event.eventType) }}</div>
+          <div class="event-content">
+            <div class="event-header">
+              <span class="event-type">{{ event.eventType }}</span>
+              <span class="event-severity">{{ event.severity }}</span>
+            </div>
+            <p class="event-city">📍 {{ event.cityName }}</p>
+            <p class="event-description">{{ event.description }}</p>
+            <p class="event-date">📅 {{ formatDate(event.date) }}</p>
+          </div>
+        </div>
+      }
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-content">
+      <p>🌍 Klima Kosovë - Të dhënat klimatike për Kosovën</p>
+      <p class="disclaimer">Të dhënat janë të bazuara në modelet klimatike dhe statistikat historike</p>
+    </div>
+  </footer>
+</div>
+
+<!-- Loading Overlay -->
+@if (isLoading) {
+  <div class="loading-overlay">
+    <div class="loader">
+      <div class="loader-spinner"></div>
+      <p>Duke ngarkuar të dhënat...</p>
+    </div>
+  </div>
+}
+
