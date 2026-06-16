@@ -14,15 +14,15 @@ export interface ClimateData {
   cityName: string;
   year: number;
   month: number;
-  averageTemperature: number;
-  maxTemperature: number;
-  minTemperature: number;
+  averageTemperature: number | null;
+  maxTemperature: number | null;
+  minTemperature: number | null;
   precipitation: number;
-  humidity: number;
-  co2Level: number;
+  humidity: number | null;
+  co2Level: number | null;
   sunnyDays: number;
   rainyDays: number;
-  windSpeed: number;
+  windSpeed: number | null;
   season: string;
 }
 
@@ -30,33 +30,33 @@ export interface YearlyClimateData {
   cityId: number;
   cityName: string;
   year: number;
-  averageTemperature: number;
+  averageTemperature: number | null;
   totalPrecipitation: number;
-  averageHumidity: number;
-  co2Level: number;
+  averageHumidity: number | null;
+  co2Level: number | null;
   totalSunnyDays: number;
   totalRainyDays: number;
-  averageWindSpeed: number;
+  averageWindSpeed: number | null;
 }
 
 export interface TemperatureTrend {
   year: number;
-  temperature: number;
-  temperatureChange: number;
+  temperature: number | null;
+  temperatureChange: number | null;
 }
 
 export interface SeasonalData {
   season: string;
-  averageTemperature: number;
+  averageTemperature: number | null;
   precipitation: number;
-  humidity: number;
+  humidity: number | null;
 }
 
 export interface ClimateComparison {
   cityName: string;
-  averageTemperature: number;
+  averageTemperature: number | null;
   totalPrecipitation: number;
-  co2Level: number;
+  co2Level: number | null;
 }
 
 export interface ExtremeWeatherEvent {
@@ -72,11 +72,11 @@ export interface ExtremeWeatherEvent {
 export interface ClimateStatistics {
   totalRecords: number;
   yearsOfData: number;
-  overallAverageTemperature: number;
-  highestTemperature: number;
-  lowestTemperature: number;
+  overallAverageTemperature: number | null;
+  highestTemperature: number | null;
+  lowestTemperature: number | null;
   averagePrecipitation: number;
-  currentCO2Level: number;
-  temperatureIncrease: number;
+  currentCO2Level: number | null;
+  temperatureIncrease: number | null;
 }
 

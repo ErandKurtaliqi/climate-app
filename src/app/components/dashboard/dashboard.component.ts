@@ -33,7 +33,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   cities: City[] = [];
   selectedCityId: number = 0;
   selectedCity: City | null = null;
-  selectedYear: number = 2024;
+  selectedYear: number = 2025;
   
   yearlyData: YearlyClimateData[] = [];
   temperatureTrend: TemperatureTrend[] = [];
@@ -48,7 +48,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   private charts: Chart[] = [];
 
   constructor(private climateService: ClimateService) {
-    for (let i = 2000; i <= 2025; i++) {
+    for (let i = 2024; i <= 2026; i++) {
       this.years.push(i);
     }
   }
@@ -111,7 +111,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     // Load city comparison
     this.climateService.getCityComparison(this.selectedYear).subscribe({
       next: (data) => {
-        this.cityComparison = data.slice(0, 10);
+        this.cityComparison = data.slice(0, 6);
         this.updateComparisonChart();
       }
     });
@@ -264,7 +264,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
 
     const orderedSeasons = ['Winter', 'Spring', 'Summer', 'Autumn'];
     const orderedData = orderedSeasons.map(s => 
-      this.seasonalData.find(d => d.season === s) || { season: s, averageTemperature: 0, precipitation: 0, humidity: 0 }
+      this.seasonalData.find(d => d.season === s) || { season: s, averageTemperature: null, precipitation: 0, humidity: null }
     );
 
     const chart = new Chart(ctx, {
@@ -272,7 +272,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       data: {
         labels: orderedData.map(d => this.translateSeason(d.season)),
         datasets: [{
-          data: orderedData.map(d => Math.max(d.averageTemperature + 10, 0)),
+          data: orderedData.map(d => d.averageTemperature === null ? 0 : Math.max(d.averageTemperature + 10, 0)),
           backgroundColor: orderedSeasons.map(s => seasonColors[s] + '99'),
           borderColor: orderedSeasons.map(s => seasonColors[s]),
           borderWidth: 3
@@ -316,7 +316,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       data: {
         labels: this.yearlyData.map(d => d.year.toString()),
         datasets: [{
-          label: 'Niveli CO₂ (ppm)',
+          label: 'Intensiteti i reshjeve (mm/min)',
           data: this.yearlyData.map(d => d.co2Level),
           borderColor: '#9C27B0',
           backgroundColor: gradient,
@@ -407,8 +407,12 @@ export class DashboardComponent implements OnInit, AfterViewInit {
         labels: ['Lagështia Mesatare', 'E thatë'],
         datasets: [{
           data: [
-            this.yearlyData.length > 0 ? this.yearlyData[this.yearlyData.length - 1].averageHumidity : 60,
-            this.yearlyData.length > 0 ? 100 - this.yearlyData[this.yearlyData.length - 1].averageHumidity : 40
+            this.yearlyData.length > 0 && this.yearlyData[this.yearlyData.length - 1].averageHumidity !== null
+              ? this.yearlyData[this.yearlyData.length - 1].averageHumidity
+              : 0,
+            this.yearlyData.length > 0 && this.yearlyData[this.yearlyData.length - 1].averageHumidity !== null
+              ? 100 - this.yearlyData[this.yearlyData.length - 1].averageHumidity!
+              : 100
           ],
           backgroundColor: ['#00BCD4', 'rgba(255,255,255,0.1)'],
           borderColor: ['#00BCD4', 'rgba(255,255,255,0.2)'],
@@ -438,6 +442,10 @@ export class DashboardComponent implements OnInit, AfterViewInit {
       'Autumn': 'Vjeshtë'
     };
     return translations[season] || season;
+  }
+
+  formatValue(value: number | null | undefined, suffix = ''): string {
+    return value === null || value === undefined ? 'N/A' : `${value}${suffix}`;
   }
 
   getSeverityClass(severity: string): string {

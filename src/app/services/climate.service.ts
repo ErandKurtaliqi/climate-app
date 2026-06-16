@@ -16,7 +16,7 @@ import {
   providedIn: 'root'
 })
 export class ClimateService {
-  private apiUrl = 'https://klimakosove-api.onrender.com/api/climate';
+  private apiUrl = 'http://localhost:5223/api/climate';
 
   constructor(private http: HttpClient) {}
 

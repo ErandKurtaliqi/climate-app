@@ -5,9 +5,9 @@
     <div class="hero-content">
       <div class="logo">
         <span class="logo-icon">🌍</span>
-        <h1>Klima Kosovë</h1>
+        <h1>Klima Podujevë</h1>
       </div>
-      <p class="subtitle">Vizualizimi i të dhënave mbi ndryshimet klimatike</p>
+      <p class="subtitle">Vizualizimi i të dhënave klimatike nga Shajkoci dhe Llapi</p>
     </div>
   </header>
 
@@ -16,7 +16,7 @@
     <div class="control-group">
       <label for="citySelect">
         <span class="control-icon">📍</span>
-        Zgjedh Qytetin
+        Zgjedh Fshatin
       </label>
       <select id="citySelect" [(ngModel)]="selectedCityId" (ngModelChange)="onCityChange()">
         @for (city of cities; track city.id) {
@@ -70,7 +70,7 @@
       <div class="stat-card temp-card">
         <div class="stat-icon">🌡️</div>
         <div class="stat-content">
-          <span class="stat-number">{{ statistics.overallAverageTemperature }}°C</span>
+          <span class="stat-number">{{ formatValue(statistics.overallAverageTemperature, '°C') }}</span>
           <span class="stat-title">Temp. Mesatare</span>
         </div>
       </div>
@@ -78,8 +78,8 @@
       <div class="stat-card increase-card">
         <div class="stat-icon">📈</div>
         <div class="stat-content">
-          <span class="stat-number" [class.positive]="statistics.temperatureIncrease > 0">
-            +{{ statistics.temperatureIncrease }}°C
+          <span class="stat-number" [class.positive]="statistics.temperatureIncrease !== null && statistics.temperatureIncrease > 0">
+            {{ statistics.temperatureIncrease !== null && statistics.temperatureIncrease > 0 ? '+' : '' }}{{ formatValue(statistics.temperatureIncrease, '°C') }}
           </span>
           <span class="stat-title">Rritja e Temp.</span>
         </div>
@@ -88,7 +88,7 @@
       <div class="stat-card max-card">
         <div class="stat-icon">🔥</div>
         <div class="stat-content">
-          <span class="stat-number">{{ statistics.highestTemperature }}°C</span>
+          <span class="stat-number">{{ formatValue(statistics.highestTemperature, '°C') }}</span>
           <span class="stat-title">Temp. Maksimale</span>
         </div>
       </div>
@@ -96,7 +96,7 @@
       <div class="stat-card min-card">
         <div class="stat-icon">❄️</div>
         <div class="stat-content">
-          <span class="stat-number">{{ statistics.lowestTemperature }}°C</span>
+          <span class="stat-number">{{ formatValue(statistics.lowestTemperature, '°C') }}</span>
           <span class="stat-title">Temp. Minimale</span>
         </div>
       </div>
@@ -112,8 +112,8 @@
       <div class="stat-card co2-card">
         <div class="stat-icon">☁️</div>
         <div class="stat-content">
-          <span class="stat-number">{{ statistics.currentCO2Level }} ppm</span>
-          <span class="stat-title">Niveli CO₂</span>
+          <span class="stat-number">{{ formatValue(statistics.currentCO2Level, ' mm/min') }}</span>
+          <span class="stat-title">Int. Reshjeve</span>
         </div>
       </div>
     </section>
@@ -160,22 +160,22 @@
         </div>
       </div>
 
-      <!-- CO2 Chart -->
+      <!-- Rainfall intensity chart -->
       <div class="chart-card">
         <div class="chart-header">
-          <h3>☁️ Niveli i CO₂</h3>
-          <p>Trendi i emetimeve të CO₂</p>
+          <h3>☁️ Intensiteti i Reshjeve</h3>
+          <p>Mesatarja vjetore e intensitetit të reshjeve</p>
         </div>
         <div class="chart-container">
           <canvas #co2Chart></canvas>
         </div>
       </div>
 
-      <!-- City Comparison Chart -->
+      <!-- Location Comparison Chart -->
       <div class="chart-card">
         <div class="chart-header">
-          <h3>🏙️ Krahasimi i Qyteteve</h3>
-          <p>Temperaturat mesatare të qyteteve në {{ selectedYear }}</p>
+          <h3>🏙️ Krahasimi i Fshatrave</h3>
+          <p>Temperaturat mesatare të lokacioneve në {{ selectedYear }}</p>
         </div>
         <div class="chart-container">
           <canvas #comparisonChart></canvas>
@@ -223,8 +223,8 @@
   <!-- Footer -->
   <footer class="footer">
     <div class="footer-content">
-      <p>🌍 Klima Kosovë - Të dhënat klimatike për Kosovën</p>
-      <p class="disclaimer">Të dhënat janë të bazuara në modelet klimatike dhe statistikat historike</p>
+      <p>🌍 Klima Podujevë - Të dhënat klimatike për Podujevën</p>
+      <p class="disclaimer">Të dhënat janë të bazuara në matjet reale nga folderat Shajkoc dhe Llap</p>
     </div>
   </footer>
 </div>
