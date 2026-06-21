@@ -9,5 +9,5 @@ import { RouterOutlet } from '@angular/router';
   styles: []
 })
 export class App {
-  title = 'Klima Kosovë';
+  title = 'Klima Podujeva';
 }
